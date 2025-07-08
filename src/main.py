@@ -34,20 +34,20 @@ app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=7)
 
 # Configuração do banco de dados
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Configurações de APIs externas
 app.config['GEMINI_API_KEY'] = os.environ.get('GEMINI_API_KEY', '')
 app.config['OPENAI_API_KEY'] = os.environ.get('OPENAI_API_KEY', '')
-app.config['MANUS_API_KEY'] = os.environ.get('MANUS_API_KEY', '')
+app.config['IA3_API_KEY'] = os.environ.get('IA3_API_KEY', '')
 app.config['GOOGLE_CLIENT_ID'] = os.environ.get('GOOGLE_CLIENT_ID', '')
 app.config['GOOGLE_CLIENT_SECRET'] = os.environ.get('GOOGLE_CLIENT_SECRET', '')
 
 # Configurações de IA
 app.config['CHAT_PRIMARY_API'] = os.environ.get('CHAT_PRIMARY_API', 'gemini')
 app.config['CHAT_SECONDARY_API'] = os.environ.get('CHAT_SECONDARY_API', 'openai')
-app.config['CHALLENGE_API'] = os.environ.get('CHALLENGE_API', 'manus')
+app.config['CHALLENGE_API'] = os.environ.get('CHALLENGE_API', 'ia3chatgpt')
 
 # Inicializar extensões
 CORS(app, origins="*", supports_credentials=True)
@@ -129,4 +129,3 @@ def health_check():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
