@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Tutor IA 3.0</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://via.placeholder.com/40" alt="Logo" class="logo">
+                <h2>Tutor IA</h2>
+            </div>
+
+            <!-- Navegação Principal -->
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html" id="home-link"><span class="material-icons">home</span><span>Início</span></a></li>
+                    <li><a href="#" class="active" id="dashboard-link"><span class="material-icons">dashboard</span><span>Dashboard</span></a></li>
+                    <li><a href="challenges.html" id="challenges-link"><span class="material-icons">emoji_events</span><span>Desafios</span></a></li>
+                    <li><a href="profile.html" id="profile-link"><span class="material-icons">person</span><span>Perfil</span></a></li>
+                </ul>
+            </nav>
+
+            <!-- Chats Recentes -->
+            <div class="chat-list-container">
+                <div class="chat-list-header">
+                    <h3>Chats Recentes</h3>
+                    <button class="new-chat-button" id="new-chat-button">
+                        <span class="material-icons">add</span>
+                    </button>
+                </div>
+                <div class="chat-list" id="chat-list">
+                    <!-- Chats serão carregados aqui via JS -->
+                </div>
+            </div>
+
+            <!-- Propaganda Pro -->
+            <div class="pro-advertisement">
+                <div class="pro-content">
+                    <span class="material-icons pro-icon">workspace_premium</span>
+                    <h4>Tutor IA Pro</h4>
+                    <p>Chats ilimitados, desafios avançados e muito mais!</p>
+                    <button class="button-pro" id="upgrade-button">Fazer Upgrade</button>
+                </div>
+            </div>
+
+            <!-- Configurações e Opções -->
+            <div class="sidebar-options">
+                <button class="option-button" id="settings-button">
+                    <span class="material-icons">settings</span>
+                    <span>Configurações</span>
+                </button>
+                <button class="option-button" id="help-button">
+                    <span class="material-icons">help</span>
+                    <span>Ajuda</span>
+                </button>
+                <button class="option-button" id="logout-button">
+                    <span class="material-icons">logout</span>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <h1 id="main-title">Dashboard</h1>
+                <div class="user-info" id="user-profile-trigger">
+                    <img src="https://via.placeholder.com/40" alt="Perfil" class="profile-picture" id="profile-picture">
+                    <span id="user-name">Usuário</span>
+                </div>
+            </header>
+
+            <!-- Conteúdo do Dashboard -->
+            <div class="dashboard-content">
+                <!-- Resumo de Atividades -->
+                <div class="dashboard-section">
+                    <h2>Resumo de Atividades</h2>
+                    <div class="activity-cards">
+                        <div class="activity-card">
+                            <span class="material-icons">chat</span>
+                            <div class="activity-info">
+                                <h3 id="total-chats">0</h3>
+                                <p>Chats Criados</p>
+                            </div>
+                        </div>
+                        <div class="activity-card">
+                            <span class="material-icons">emoji_events</span>
+                            <div class="activity-info">
+                                <h3 id="completed-challenges">0</h3>
+                                <p>Desafios Concluídos</p>
+                            </div>
+                        </div>
+                        <div class="activity-card">
+                            <span class="material-icons">schedule</span>
+                            <div class="activity-info">
+                                <h3 id="study-time">0h</h3>
+                                <p>Tempo de Estudo</p>
+                            </div>
+                        </div>
+                        <div class="activity-card">
+                            <span class="material-icons">trending_up</span>
+                            <div class="activity-info">
+                                <h3 id="learning-streak">0</h3>
+                                <p>Dias Consecutivos</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chats Recentes (Detalhado) -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Seus Chats</h2>
+                        <button class="button-primary" id="view-all-chats">Ver Todos</button>
+                    </div>
+                    <div class="dashboard-chats" id="dashboard-chats">
+                        <!-- Chats serão carregados aqui -->
+                    </div>
+                </div>
+
+                <!-- Perfil e Amigos -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Perfil e Conexões</h2>
+                        <button class="button-primary" id="edit-profile-button">Editar Perfil</button>
+                    </div>
+                    <div class="profile-friends-container">
+                        <!-- Informações do Perfil -->
+                        <div class="profile-summary">
+                            <img src="https://via.placeholder.com/80" alt="Perfil" class="profile-summary-picture" id="profile-summary-picture">
+                            <div class="profile-summary-info">
+                                <h3 id="profile-summary-name">Nome do Usuário</h3>
+                                <p id="profile-summary-education">Ensino Médio</p>
+                                <p id="profile-summary-age">18 anos</p>
+                                <div class="profile-summary-subjects" id="profile-summary-subjects">
+                                    <!-- Matérias de interesse serão carregadas aqui -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lista de Amigos -->
+                        <div class="friends-section">
+                            <h3>Amigos</h3>
+                            <div class="friends-list" id="friends-list">
+                                <!-- Lista de amigos será carregada aqui -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progresso por Matéria -->
+                <div class="dashboard-section">
+                    <h2>Progresso por Matéria</h2>
+                    <div class="subject-progress" id="subject-progress">
+                        <!-- Progresso será carregado aqui -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mini Popup do Perfil -->
+    <div id="profile-popup" class="profile-popup" style="display: none;">
+        <div class="profile-popup-content">
+            <div class="profile-popup-header">
+                <img src="https://via.placeholder.com/60" alt="Perfil" class="profile-popup-picture" id="profile-popup-picture">
+                <div class="profile-popup-info">
+                    <h4 id="profile-popup-name">Nome do Usuário</h4>
+                    <p id="profile-popup-email">email@exemplo.com</p>
+                </div>
+            </div>
+            <div class="profile-popup-options">
+                <a href="profile.html" class="profile-popup-option">
+                    <span class="material-icons">person</span>
+                    <span>Ver Perfil</span>
+                </a>
+                <a href="#" class="profile-popup-option" id="popup-settings">
+                    <span class="material-icons">settings</span>
+                    <span>Configurações</span>
+                </a>
+                <a href="#" class="profile-popup-option" id="popup-upgrade">
+                    <span class="material-icons">workspace_premium</span>
+                    <span>Upgrade Pro</span>
+                </a>
+                <a href="#" class="profile-popup-option" id="popup-logout">
+                    <span class="material-icons">logout</span>
+                    <span>Sair</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configurações -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-settings-modal">&times;</span>
+            <h2>Configurações</h2>
+            <div class="form-group">
+                <label for="setting-difficulty">Dificuldade Padrão:</label>
+                <select id="setting-difficulty">
+                    <option value="muito_facil">Muito Fácil (6-10 anos)</option>
+                    <option value="facil">Fácil (11-12 anos)</option>
+                    <option value="medio_facil">Médio Fácil (13-14 anos)</option>
+                    <option value="medio">Médio (15-16 anos)</option>
+                    <option value="medio_dificil">Médio Difícil (17-18 anos)</option>
+                    <option value="dificil">Difícil (19+ anos)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dark-mode-toggle">Modo Escuro:</label>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <button id="save-settings" class="button-primary">Salvar Configurações</button>
+        </div>
+    </div>
+
+    <!-- Modal de Upgrade -->
+    <div id="upgrade-modal" class="modal">
+        <div class="modal-content upgrade-modal-content">
+            <span class="close-button" id="close-upgrade-modal">&times;</span>
+            <h2>Tutor IA Pro</h2>
+            <p>Desbloqueie todo o potencial do seu aprendizado!</p>
+            <div class="pricing-options">
+                <div class="plan-card">
+                    <h3>Plano Básico</h3>
+                    <p class="price">R$ 0<span>/mês</span></p>
+                    <ul>
+                        <li><span class="material-icons">check_circle</span>5 chats por dia</li>
+                        <li><span class="material-icons">check_circle</span>Desafios básicos</li>
+                        <li><span class="material-icons">check_circle</span>Relatórios simples</li>
+                    </ul>
+                    <button class="button-primary" disabled>Plano Atual</button>
+                </div>
+                <div class="plan-card featured">
+                    <h3>Plano Pro</h3>
+                    <p class="price">R$ 29<span>/mês</span></p>
+                    <ul>
+                        <li><span class="material-icons">check_circle</span>Chats ilimitados</li>
+                        <li><span class="material-icons">check_circle</span>Todos os desafios</li>
+                        <li><span class="material-icons">check_circle</span>Relatórios avançados</li>
+                        <li><span class="material-icons">check_circle</span>Suporte prioritário</li>
+                        <li><span class="material-icons">check_circle</span>IA mais inteligente</li>
+                    </ul>
+                    <button class="button-primary">Assinar Agora</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
+

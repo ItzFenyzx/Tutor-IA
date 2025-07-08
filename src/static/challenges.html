@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafios - Tutor IA 3.0</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://via.placeholder.com/40" alt="Logo" class="logo">
+                <h2>Tutor IA</h2>
+            </div>
+
+            <!-- Navegação Principal -->
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html" id="home-link"><span class="material-icons">home</span><span>Início</span></a></li>
+                    <li><a href="dashboard.html" id="dashboard-link"><span class="material-icons">dashboard</span><span>Dashboard</span></a></li>
+                    <li><a href="#" class="active" id="challenges-link"><span class="material-icons">emoji_events</span><span>Desafios</span></a></li>
+                    <li><a href="profile.html" id="profile-link"><span class="material-icons">person</span><span>Perfil</span></a></li>
+                </ul>
+            </nav>
+
+            <!-- Chats Recentes -->
+            <div class="chat-list-container">
+                <div class="chat-list-header">
+                    <h3>Chats Recentes</h3>
+                    <button class="new-chat-button" id="new-chat-button">
+                        <span class="material-icons">add</span>
+                    </button>
+                </div>
+                <div class="chat-list" id="chat-list">
+                    <!-- Chats serão carregados aqui via JS -->
+                </div>
+            </div>
+
+            <!-- Propaganda Pro -->
+            <div class="pro-advertisement">
+                <div class="pro-content">
+                    <span class="material-icons pro-icon">workspace_premium</span>
+                    <h4>Tutor IA Pro</h4>
+                    <p>Chats ilimitados, desafios avançados e muito mais!</p>
+                    <button class="button-pro" id="upgrade-button">Fazer Upgrade</button>
+                </div>
+            </div>
+
+            <!-- Configurações e Opções -->
+            <div class="sidebar-options">
+                <button class="option-button" id="settings-button">
+                    <span class="material-icons">settings</span>
+                    <span>Configurações</span>
+                </button>
+                <button class="option-button" id="help-button">
+                    <span class="material-icons">help</span>
+                    <span>Ajuda</span>
+                </button>
+                <button class="option-button" id="logout-button">
+                    <span class="material-icons">logout</span>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <h1 id="main-title">Desafios Educacionais</h1>
+                <div class="user-info" id="user-profile-trigger">
+                    <img src="https://via.placeholder.com/40" alt="Perfil" class="profile-picture" id="profile-picture">
+                    <span id="user-name">Usuário</span>
+                </div>
+            </header>
+
+            <!-- Conteúdo dos Desafios -->
+            <div class="challenges-content">
+                <div class="challenges-header">
+                    <h2>Explore Desafios Educacionais</h2>
+                    <p>Teste seus conhecimentos e aprimore suas habilidades com desafios interativos!</p>
+                </div>
+
+                <div class="challenge-filters">
+                    <select id="subject-filter">
+                        <option value="">Todas as Matérias</option>
+                        <option value="matematica">Matemática</option>
+                        <option value="portugues">Português</option>
+                        <option value="historia">História</option>
+                        <option value="geografia">Geografia</option>
+                        <option value="ciencias">Ciências</option>
+                        <option value="ingles">Inglês</option>
+                        <option value="fisica">Física</option>
+                        <option value="quimica">Química</option>
+                        <option value="biologia">Biologia</option>
+                        <option value="filosofia">Filosofia</option>
+                        <option value="sociologia">Sociologia</option>
+                        <option value="artes">Artes</option>
+                        <option value="informatica">Informática</option>
+                    </select>
+                    <select id="difficulty-filter">
+                        <option value="">Todas as Dificuldades</option>
+                        <option value="muito_facil">Muito Fácil</option>
+                        <option value="facil">Fácil</option>
+                        <option value="medio_facil">Médio Fácil</option>
+                        <option value="medio">Médio</option>
+                        <option value="medio_dificil">Médio Difícil</option>
+                        <option value="dificil">Difícil</option>
+                    </select>
+                    <select id="status-filter">
+                        <option value="available">Disponíveis</option>
+                        <option value="completed">Concluídos</option>
+                        <option value="all">Todos</option>
+                    </select>
+                </div>
+
+                <div class="challenge-grid" id="challenge-grid">
+                    <!-- Desafio de Exemplo -->
+                    <div class="challenge-card" data-subject="matematica" data-difficulty="medio" data-status="available">
+                        <div class="challenge-card-header">
+                            <span class="material-icons challenge-icon" style="color: #FF6B6B;">calculate</span>
+                            <div class="challenge-badge">Matemática</div>
+                        </div>
+                        <h3>Desafio de Álgebra: Equações de 2º Grau</h3>
+                        <div class="challenge-meta">
+                            <span class="meta-item"><span class="material-icons">school</span>Ensino Médio</span>
+                            <span class="meta-item"><span class="material-icons">star</span>Médio</span>
+                            <span class="meta-item"><span class="material-icons">schedule</span>30 min</span>
+                        </div>
+                        <p class="challenge-description">Resolva uma série de equações de segundo grau, aplicando as fórmulas de Bhaskara e soma/produto das raízes. Teste seus conhecimentos com exercícios progressivos.</p>
+                        <div class="challenge-stats">
+                            <span><span class="material-icons">quiz</span>10 questões</span>
+                            <span><span class="material-icons">people</span>1.2k participantes</span>
+                        </div>
+                        <div class="challenge-actions">
+                            <button class="challenge-button secondary" onclick="viewChallengeDetails(1)">Ver Detalhes</button>
+                            <button class="challenge-button primary" onclick="startChallenge(1)">Iniciar Desafio</button>
+                        </div>
+                    </div>
+
+                    <!-- Estado de "Em Breve" para outros desafios -->
+                    <div class="coming-soon-section">
+                        <div class="coming-soon-card">
+                            <span class="material-icons">construction</span>
+                            <h3>Mais Desafios em Breve!</h3>
+                            <p>Estamos preparando centenas de desafios incríveis para todas as matérias e níveis de dificuldade.</p>
+                            <div class="coming-soon-subjects">
+                                <span class="subject-preview" style="background-color: #4ECDC4;">Português</span>
+                                <span class="subject-preview" style="background-color: #45B7D1;">História</span>
+                                <span class="subject-preview" style="background-color: #96CEB4;">Geografia</span>
+                                <span class="subject-preview" style="background-color: #FECA57;">Ciências</span>
+                                <span class="subject-preview" style="background-color: #FF9FF3;">Inglês</span>
+                                <span class="subject-preview" style="background-color: #54A0FF;">Física</span>
+                                <span class="subject-preview" style="background-color: #5F27CD;">Química</span>
+                                <span class="subject-preview" style="background-color: #00D2D3;">Biologia</span>
+                            </div>
+                            <button class="button-secondary" disabled>Aguarde as Novidades</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mini Popup do Perfil -->
+    <div id="profile-popup" class="profile-popup" style="display: none;">
+        <div class="profile-popup-content">
+            <div class="profile-popup-header">
+                <img src="https://via.placeholder.com/60" alt="Perfil" class="profile-popup-picture" id="profile-popup-picture">
+                <div class="profile-popup-info">
+                    <h4 id="profile-popup-name">Nome do Usuário</h4>
+                    <p id="profile-popup-email">email@exemplo.com</p>
+                </div>
+            </div>
+            <div class="profile-popup-options">
+                <a href="profile.html" class="profile-popup-option">
+                    <span class="material-icons">person</span>
+                    <span>Ver Perfil</span>
+                </a>
+                <a href="#" class="profile-popup-option" id="popup-settings">
+                    <span class="material-icons">settings</span>
+                    <span>Configurações</span>
+                </a>
+                <a href="#" class="profile-popup-option" id="popup-upgrade">
+                    <span class="material-icons">workspace_premium</span>
+                    <span>Upgrade Pro</span>
+                </a>
+                <a href="#" class="profile-popup-option" id="popup-logout">
+                    <span class="material-icons">logout</span>
+                    <span>Sair</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes do Desafio -->
+    <div id="challenge-details-modal" class="modal">
+        <div class="modal-content challenge-details-content">
+            <span class="close-button" id="close-challenge-details">&times;</span>
+            <div class="challenge-details-header">
+                <span class="material-icons challenge-details-icon" style="color: #FF6B6B;">calculate</span>
+                <div>
+                    <h2>Desafio de Álgebra: Equações de 2º Grau</h2>
+                    <div class="challenge-details-badges">
+                        <span class="badge badge-subject">Matemática</span>
+                        <span class="badge badge-difficulty">Médio</span>
+                        <span class="badge badge-level">Ensino Médio</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="challenge-details-body">
+                <div class="challenge-overview">
+                    <h3>Sobre este Desafio</h3>
+                    <p>Este desafio foi criado para testar e aprimorar seus conhecimentos sobre equações de segundo grau. Você irá resolver problemas que envolvem a aplicação da fórmula de Bhaskara, análise de discriminante, e propriedades das raízes.</p>
+                </div>
+
+                <div class="challenge-objectives">
+                    <h3>Objetivos de Aprendizado</h3>
+                    <ul>
+                        <li>Aplicar a fórmula de Bhaskara corretamente</li>
+                        <li>Identificar o tipo de raízes através do discriminante</li>
+                        <li>Utilizar as relações de soma e produto das raízes</li>
+                        <li>Resolver problemas contextualizados</li>
+                    </ul>
+                </div>
+
+                <div class="challenge-structure">
+                    <h3>Estrutura do Desafio</h3>
+                    <div class="structure-grid">
+                        <div class="structure-item">
+                            <span class="material-icons">quiz</span>
+                            <div>
+                                <h4>10 Questões</h4>
+                                <p>Progressão gradual de dificuldade</p>
+                            </div>
+                        </div>
+                        <div class="structure-item">
+                            <span class="material-icons">schedule</span>
+                            <div>
+                                <h4>30 Minutos</h4>
+                                <p>Tempo recomendado para conclusão</p>
+                            </div>
+                        </div>
+                        <div class="structure-item">
+                            <span class="material-icons">emoji_events</span>
+                            <div>
+                                <h4>Certificado</h4>
+                                <p>Receba ao completar com 70%+</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="challenge-requirements">
+                    <h3>Pré-requisitos</h3>
+                    <div class="requirements-list">
+                        <span class="requirement">Conhecimento básico de álgebra</span>
+                        <span class="requirement">Operações com números reais</span>
+                        <span class="requirement">Conceito de função quadrática</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="challenge-details-footer">
+                <button class="button-secondary" onclick="closeModal('challenge-details-modal')">Fechar</button>
+                <button class="button-primary" onclick="startChallenge(1)">Iniciar Desafio</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configurações -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-settings-modal">&times;</span>
+            <h2>Configurações</h2>
+            <div class="form-group">
+                <label for="setting-difficulty">Dificuldade Padrão:</label>
+                <select id="setting-difficulty">
+                    <option value="muito_facil">Muito Fácil (6-10 anos)</option>
+                    <option value="facil">Fácil (11-12 anos)</option>
+                    <option value="medio_facil">Médio Fácil (13-14 anos)</option>
+                    <option value="medio">Médio (15-16 anos)</option>
+                    <option value="medio_dificil">Médio Difícil (17-18 anos)</option>
+                    <option value="dificil">Difícil (19+ anos)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dark-mode-toggle">Modo Escuro:</label>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <button id="save-settings" class="button-primary">Salvar Configurações</button>
+        </div>
+    </div>
+
+    <!-- Modal de Upgrade -->
+    <div id="upgrade-modal" class="modal">
+        <div class="modal-content upgrade-modal-content">
+            <span class="close-button" id="close-upgrade-modal">&times;</span>
+            <h2>Tutor IA Pro</h2>
+            <p>Desbloqueie todo o potencial do seu aprendizado!</p>
+            <div class="pricing-options">
+                <div class="plan-card">
+                    <h3>Plano Básico</h3>
+                    <p class="price">R$ 0<span>/mês</span></p>
+                    <ul>
+                        <li><span class="material-icons">check_circle</span>5 chats por dia</li>
+                        <li><span class="material-icons">check_circle</span>Desafios básicos</li>
+                        <li><span class="material-icons">check_circle</span>Relatórios simples</li>
+                    </ul>
+                    <button class="button-primary" disabled>Plano Atual</button>
+                </div>
+                <div class="plan-card featured">
+                    <h3>Plano Pro</h3>
+                    <p class="price">R$ 29<span>/mês</span></p>
+                    <ul>
+                        <li><span class="material-icons">check_circle</span>Chats ilimitados</li>
+                        <li><span class="material-icons">check_circle</span>Todos os desafios</li>
+                        <li><span class="material-icons">check_circle</span>Relatórios avançados</li>
+                        <li><span class="material-icons">check_circle</span>Suporte prioritário</li>
+                        <li><span class="material-icons">check_circle</span>IA mais inteligente</li>
+                    </ul>
+                    <button class="button-primary">Assinar Agora</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="challenges.js"></script>
+</body>
+</html>
+

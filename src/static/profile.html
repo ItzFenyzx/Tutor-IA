@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Tutor IA 3.0</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://via.placeholder.com/40" alt="Logo" class="logo">
+                <h2>Tutor IA</h2>
+            </div>
+
+            <!-- Navegação Principal -->
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html" id="home-link"><span class="material-icons">home</span><span>Início</span></a></li>
+                    <li><a href="dashboard.html" id="dashboard-link"><span class="material-icons">dashboard</span><span>Dashboard</span></a></li>
+                    <li><a href="challenges.html" id="challenges-link"><span class="material-icons">emoji_events</span><span>Desafios</span></a></li>
+                    <li><a href="#" class="active" id="profile-link"><span class="material-icons">person</span><span>Perfil</span></a></li>
+                </ul>
+            </nav>
+
+            <!-- Chats Recentes -->
+            <div class="chat-list-container">
+                <div class="chat-list-header">
+                    <h3>Chats Recentes</h3>
+                    <button class="new-chat-button" id="new-chat-button">
+                        <span class="material-icons">add</span>
+                    </button>
+                </div>
+                <div class="chat-list" id="chat-list">
+                    <!-- Chats serão carregados aqui via JS -->
+                </div>
+            </div>
+
+            <!-- Propaganda Pro -->
+            <div class="pro-advertisement">
+                <div class="pro-content">
+                    <span class="material-icons pro-icon">workspace_premium</span>
+                    <h4>Tutor IA Pro</h4>
+                    <p>Chats ilimitados, desafios avançados e muito mais!</p>
+                    <button class="button-pro" id="upgrade-button">Fazer Upgrade</button>
+                </div>
+            </div>
+
+            <!-- Configurações e Opções -->
+            <div class="sidebar-options">
+                <button class="option-button" id="settings-button">
+                    <span class="material-icons">settings</span>
+                    <span>Configurações</span>
+                </button>
+                <button class="option-button" id="help-button">
+                    <span class="material-icons">help</span>
+                    <span>Ajuda</span>
+                </button>
+                <button class="option-button" id="logout-button">
+                    <span class="material-icons">logout</span>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <h1 id="main-title">Meu Perfil</h1>
+                <div class="user-info" id="user-profile-trigger">
+                    <img src="https://via.placeholder.com/40" alt="Perfil" class="profile-picture" id="profile-picture">
+                    <span id="user-name">Usuário</span>
+                </div>
+            </header>
+
+            <!-- Área do Perfil -->
+            <div class="profile-content">
+                <div class="profile-container">
+                    <!-- Seção da Foto de Perfil -->
+                    <div class="profile-picture-section">
+                        <div class="profile-picture-container">
+                            <img src="https://via.placeholder.com/150" alt="Foto de Perfil" class="profile-picture-large" id="profile-picture-large">
+                            <div class="profile-picture-overlay">
+                                <span class="material-icons">camera_alt</span>
+                                <span>Alterar Foto</span>
+                            </div>
+                            <input type="file" id="profile-picture-input" accept="image/*" style="display: none;">
+                        </div>
+                        <h2 id="profile-display-name">Nome do Usuário</h2>
+                        <p id="profile-display-email">email@exemplo.com</p>
+                    </div>
+
+                    <!-- Formulário de Edição -->
+                    <div class="profile-form-section">
+                        <form id="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="profile-name">Nome Completo:</label>
+                                    <input type="text" id="profile-name" placeholder="Seu nome completo" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile-email">Email:</label>
+                                    <input type="email" id="profile-email" placeholder="seu@email.com" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="profile-age">Idade:</label>
+                                    <input type="number" id="profile-age" min="6" max="99" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile-education">Nível de Ensino:</label>
+                                    <select id="profile-education" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="fundamental_i">Ensino Fundamental I (1º ao 5º ano)</option>
+                                        <option value="fundamental_ii">Ensino Fundamental II (6º ao 9º ano)</option>
+                                        <option value="medio">Ensino Médio</option>
+                                        <option value="superior">Ensino Superior</option>
+                                        <option value="outros">Outros</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="profile-difficulty">Dificuldade Preferida:</label>
+                                    <select id="profile-difficulty" required>
+                                        <option value="muito_facil">Muito Fácil (6-10 anos)</option>
+                                        <option value="facil">Fácil (11-12 anos)</option>
+                                        <option value="medio_facil">Médio Fácil (13-14 anos)</option>
+                                        <option value="medio">Médio (15-16 anos)</option>
+                                        <option value="medio_dificil">Médio Difícil (17-18 anos)</option>
+                                        <option value="dificil">Difícil (19+ anos)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile-phone">Telefone (opcional):</label>
+                                    <input type="tel" id="profile-phone" placeholder="(11) 99999-9999">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profile-bio">Sobre mim (opcional):</label>
+                                <textarea id="profile-bio" rows="4" placeholder="Conte um pouco sobre você, seus interesses e objetivos de aprendizado..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profile-subjects">Matérias de Interesse:</label>
+                                <div class="subjects-checkboxes">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="matematica">
+                                        <span>Matemática</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="portugues">
+                                        <span>Português</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="historia">
+                                        <span>História</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="geografia">
+                                        <span>Geografia</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="ciencias">
+                                        <span>Ciências</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="ingles">
+                                        <span>Inglês</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="fisica">
+                                        <span>Física</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="quimica">
+                                        <span>Química</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="biologia">
+                                        <span>Biologia</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="filosofia">
+                                        <span>Filosofia</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="sociologia">
+                                        <span>Sociologia</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="artes">
+                                        <span>Artes</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" id="cancel-profile-edit" class="button-secondary">Cancelar</button>
+                                <button type="submit" class="button-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Estatísticas do Perfil -->
+                <div class="profile-stats">
+                    <h3>Suas Estatísticas</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="material-icons">chat</span>
+                            <div class="stat-info">
+                                <h4 id="total-chats">0</h4>
+                                <p>Chats Criados</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <span class="material-icons">emoji_events</span>
+                            <div class="stat-info">
+                                <h4 id="completed-challenges">0</h4>
+                                <p>Desafios Concluídos</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <span class="material-icons">schedule</span>
+                            <div class="stat-info">
+                                <h4 id="study-time">0h</h4>
+                                <p>Tempo de Estudo</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <span class="material-icons">trending_up</span>
+                            <div class="stat-info">
+                                <h4 id="learning-streak">0</h4>
+                                <p>Dias Consecutivos</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mini Popup do Perfil -->
+    <div id="profile-popup" class="profile-popup" style="display: none;">
+        <div class="profile-popup-content">
+            <div class="profile-popup-header">
+                <img src="https://via.placeholder.com/60" alt="Perfil" class="profile-popup-picture" id="profile-popup-picture">
+                <div class="profile-popup-info">
+                    <h4 id="profile-popup-name">Nome do Usuário</h4>
+                    <p id="profile-popup-email">email@exemplo.com</p>
+                </div>
+            </div>
+            <div class="profile-popup-options">
+                <a href="#" class="profile-popup-option">
+                    <span class="material-icons">person</span>
+                    <span>Ver Perfil</span>
+                </a>
+                <a href="#" class="profile-popup-option" id="popup-settings">
+                    <span class="material-icons">settings</span>
+                    <span>Configurações</span>
+                </a>
+                <a href="#" class="profile-popup-option" id="popup-upgrade">
+                    <span class="material-icons">workspace_premium</span>
+                    <span>Upgrade Pro</span>
+                </a>
+                <a href="#" class="profile-popup-option" id="popup-logout">
+                    <span class="material-icons">logout</span>
+                    <span>Sair</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configurações -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-settings-modal">&times;</span>
+            <h2>Configurações</h2>
+            <div class="form-group">
+                <label for="setting-difficulty">Dificuldade Padrão:</label>
+                <select id="setting-difficulty">
+                    <option value="muito_facil">Muito Fácil (6-10 anos)</option>
+                    <option value="facil">Fácil (11-12 anos)</option>
+                    <option value="medio_facil">Médio Fácil (13-14 anos)</option>
+                    <option value="medio">Médio (15-16 anos)</option>
+                    <option value="medio_dificil">Médio Difícil (17-18 anos)</option>
+                    <option value="dificil">Difícil (19+ anos)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dark-mode-toggle">Modo Escuro:</label>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <button id="save-settings" class="button-primary">Salvar Configurações</button>
+        </div>
+    </div>
+
+    <!-- Modal de Upgrade -->
+    <div id="upgrade-modal" class="modal">
+        <div class="modal-content upgrade-modal-content">
+            <span class="close-button" id="close-upgrade-modal">&times;</span>
+            <h2>Tutor IA Pro</h2>
+            <p>Desbloqueie todo o potencial do seu aprendizado!</p>
+            <div class="pricing-options">
+                <div class="plan-card">
+                    <h3>Plano Básico</h3>
+                    <p class="price">R$ 0<span>/mês</span></p>
+                    <ul>
+                        <li><span class="material-icons">check_circle</span>5 chats por dia</li>
+                        <li><span class="material-icons">check_circle</span>Desafios básicos</li>
+                        <li><span class="material-icons">check_circle</span>Relatórios simples</li>
+                    </ul>
+                    <button class="button-primary" disabled>Plano Atual</button>
+                </div>
+                <div class="plan-card featured">
+                    <h3>Plano Pro</h3>
+                    <p class="price">R$ 29<span>/mês</span></p>
+                    <ul>
+                        <li><span class="material-icons">check_circle</span>Chats ilimitados</li>
+                        <li><span class="material-icons">check_circle</span>Todos os desafios</li>
+                        <li><span class="material-icons">check_circle</span>Relatórios avançados</li>
+                        <li><span class="material-icons">check_circle</span>Suporte prioritário</li>
+                        <li><span class="material-icons">check_circle</span>IA mais inteligente</li>
+                    </ul>
+                    <button class="button-primary">Assinar Agora</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="profile.js"></script>
+</body>
+</html>
+

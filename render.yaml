@@ -1,0 +1,20 @@
+- type: web
+  name: tutor-ia-3-0
+  env: python
+  buildCommand: pip install -r requirements.txt
+  startCommand: python src/main.py
+  envVars:
+- key: SECRET_KEY
+  value: tutor_ia_3_0_super_secret_key_arthur_nogueira_2025
+- key: JWT_SECRET_KEY
+  value: jwt_tutor_ia_3_0_secret_key_manus_ai_2025
+- key: DATABASE_URL
+  value: sqlite:///tutor_ia.db
+- key: FLASK_ENV
+  value: production
+- key: CHAT_PRIMARY_API
+  value: gemini
+- key: CHAT_SECONDARY_API
+  value: openai
+- key: IA3_API_KEY
+  value: ia3chatgpt

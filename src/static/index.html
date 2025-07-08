@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor IA 3.0</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Prevenção de flash branco */
+        html {
+            background-color: #ffffff;
+        }
+        
+        [data-theme="dark"] html {
+            background-color: #1a1a1a;
+        }
+        
+        body {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        body.loaded {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://via.placeholder.com/32x32/4CAF50/FFFFFF?text=T" alt="Logo" class="logo">
+                <h2>Tutor IA</h2>
+            </div>
+
+            <!-- Navegação Principal -->
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item active" id="home-link">
+                    <span class="nav-icon">🏠</span>
+                    <span>Início</span>
+                </a>
+                <a href="dashboard.html" class="nav-item" id="dashboard-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="challenges.html" class="nav-item" id="challenges-link">
+                    <span class="nav-icon">🏆</span>
+                    <span>Desafios</span>
+                </a>
+            </nav>
+
+            <!-- Chats Recentes -->
+            <div class="chats-section">
+                <div class="chats-header">
+                    <h3>Chats Recentes</h3>
+                    <button id="new-chat-button" class="new-chat-btn" title="Novo Chat">
+                        <span class="nav-icon">➕</span>
+                    </button>
+                </div>
+                <div class="chats-list" id="chat-list">
+                    <!-- Chats serão carregados aqui -->
+                </div>
+            </div>
+
+            <!-- Upgrade Pro (Menor) -->
+            <div class="upgrade-section">
+                <div class="upgrade-card">
+                    <div class="upgrade-icon">🎓</div>
+                    <div class="upgrade-content">
+                        <h4>Tutor IA Pro</h4>
+                        <p>Chats ilimitados e muito mais!</p>
+                    </div>
+                    <button id="upgrade-button" class="upgrade-btn">
+                        Fazer Upgrade
+                    </button>
+                </div>
+            </div>
+
+            <!-- Menu Inferior (SEM PERFIL) -->
+            <div class="sidebar-footer">
+                <button class="footer-btn" id="help-button" title="Ajuda">
+                    <span class="nav-icon">❓</span>
+                    <span>Ajuda</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <h1 id="main-title">Tutor IA 3.0</h1>
+                <div class="user-info" id="user-profile-trigger">
+                    <img id="profile-picture" src="https://via.placeholder.com/40" alt="Perfil" class="profile-picture">
+                    <span id="user-name">Usuário</span>
+                </div>
+            </header>
+
+            <!-- Popup de Perfil -->
+            <div class="profile-popup-overlay" id="profile-popup-overlay">
+                <div class="profile-popup" id="profile-popup">
+                    <div class="profile-popup-header">
+                        <img id="profile-popup-picture" src="https://via.placeholder.com/48" alt="Perfil" class="profile-popup-picture">
+                        <div class="profile-popup-info">
+                            <h4 id="profile-popup-name">Usuário</h4>
+                            <p id="profile-popup-email">usuario@email.com</p>
+                        </div>
+                    </div>
+                    <ul class="profile-popup-menu">
+                        <li class="profile-popup-item">
+                            <a href="profile.html" class="profile-popup-link">
+                                <span class="nav-icon">👤</span>
+                                <span>Editar Perfil</span>
+                            </a>
+                        </li>
+                        <li class="profile-popup-item">
+                            <a href="#" class="profile-popup-link" id="settings-link">
+                                <span class="nav-icon">⚙️</span>
+                                <span>Configurações</span>
+                            </a>
+                        </li>
+                        <li class="profile-popup-item">
+                            <a href="#" class="profile-popup-link" id="help-link">
+                                <span class="nav-icon">❓</span>
+                                <span>Ajuda</span>
+                            </a>
+                        </li>
+                        <li class="profile-popup-item">
+                            <a href="#" class="profile-popup-link logout" id="logout-link">
+                                <span class="nav-icon">🚪</span>
+                                <span>Sair</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Área de Conteúdo -->
+            <div class="content-area">
+                <!-- Seção de Matérias (EM CIMA) -->
+                <section class="subjects-section" id="subjects-section">
+                    <h2>Escolha uma matéria para começar</h2>
+                    <div class="subjects-grid" id="subjects-grid">
+                        <!-- Matérias serão carregadas aqui -->
+                    </div>
+                </section>
+
+                <!-- Área do Chat (FOCO PRINCIPAL) -->
+                <section class="chat-area hidden" id="chat-area">
+                    <!-- Header do Chat -->
+                    <div class="chat-header">
+                        <div class="chat-subject-info">
+                            <span class="chat-subject-icon" id="chat-subject-icon">📚</span>
+                            <div class="chat-subject-details">
+                                <h3 id="chat-subject-title">Matéria</h3>
+                                <p id="chat-subject-description">Descrição da matéria</p>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="chat-action-btn" id="new-chat-from-header" title="Novo Chat">
+                                ➕ Novo
+                            </button>
+                            <button class="chat-action-btn" id="edit-chat-name" title="Editar Nome">
+                                ✏️ Editar
+                            </button>
+                            <button class="chat-action-btn" id="delete-chat" title="Excluir Chat">
+                                🗑️ Excluir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mensagens do Chat -->
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Mensagens serão carregadas aqui -->
+                    </div>
+
+                    <!-- Área de Input -->
+                    <div class="chat-input-area">
+                        <div class="chat-input-container">
+                            <textarea 
+                                id="chat-input" 
+                                class="chat-input" 
+                                placeholder="Digite sua pergunta..."
+                                rows="1"
+                                maxlength="2000"
+                            ></textarea>
+                            <button id="send-button" class="send-button" title="Enviar mensagem">
+                                ➤
+                            </button>
+                        </div>
+                        <div class="character-count" id="character-count">0/2000</div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Edição de Chat -->
+    <div class="modal-overlay" id="edit-chat-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Nome do Chat</h3>
+                <button class="modal-close" id="close-edit-chat-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="chat-name-input">Nome do Chat</label>
+                    <input type="text" id="chat-name-input" class="form-input" placeholder="Digite o novo nome...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-edit-chat">Cancelar</button>
+                <button class="btn btn-primary" id="save-chat-name">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Upgrade -->
+    <div class="modal-overlay" id="upgrade-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">🎓 Tutor IA Pro</h3>
+                <button class="modal-close" id="close-upgrade-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="font-size: 3rem; margin-bottom: 16px;">🚀</div>
+                    <h4 style="margin-bottom: 8px;">Desbloqueie todo o potencial do Tutor IA!</h4>
+                    <p style="color: var(--text-secondary);">Tenha acesso a recursos exclusivos e aprenda sem limites.</p>
+                </div>
+                
+                <div style="background-color: var(--background-tertiary); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h5 style="margin-bottom: 12px;">✨ Recursos Pro:</h5>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 8px;">🔥 Chats ilimitados por dia</li>
+                        <li style="margin-bottom: 8px;">🎯 Desafios avançados personalizados</li>
+                        <li style="margin-bottom: 8px;">📊 Relatórios detalhados de progresso</li>
+                        <li style="margin-bottom: 8px;">🤖 Acesso a IAs especializadas</li>
+                        <li style="margin-bottom: 8px;">⚡ Respostas mais rápidas</li>
+                        <li>🎨 Temas e personalizações exclusivas</li>
+                    </ul>
+                </div>
+                
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 8px;">
+                        R$ 19,90/mês
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Cancele quando quiser</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="maybe-later">Talvez depois</button>
+                <button class="btn btn-primary" id="upgrade-now">🚀 Fazer Upgrade</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configurações -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">⚙️ Configurações</h3>
+                <button class="modal-close" id="close-settings-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Tema</label>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-secondary" id="light-theme">☀️ Claro</button>
+                        <button class="btn btn-secondary" id="dark-theme">🌙 Escuro</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="age-input">Idade</label>
+                    <input type="number" id="age-input" class="form-input" min="6" max="100" placeholder="Digite sua idade">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Nível de Dificuldade</label>
+                    <select id="difficulty-select" class="form-input">
+                        <option value="auto">Automático (baseado na idade)</option>
+                        <option value="muito-facil">Muito Fácil (6-10 anos)</option>
+                        <option value="facil">Fácil (11-12 anos)</option>
+                        <option value="medio-facil">Médio Fácil (13-14 anos)</option>
+                        <option value="medio">Médio (15-16 anos)</option>
+                        <option value="medio-dificil">Médio Difícil (17-18 anos)</option>
+                        <option value="dificil">Difícil (19+ anos)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="save-settings">Salvar Configurações</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
