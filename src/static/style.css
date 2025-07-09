@@ -390,18 +390,7 @@ body.loaded {
 }
 
 /* === POPUP DE PERFIL === */
-.profile-popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all var(--transition-fast);
-}
+
 
 .profile-popup-overlay.active {
     opacity: 1;
@@ -1035,4 +1024,11 @@ body.loaded {
 .mt-1 { margin-top: 8px; }
 .mt-2 { margin-top: 16px; }
 .mt-3 { margin-top: 24px; }
+
+
+
+.hidden-by-default {
+    display: none !important;
+}
+
 
