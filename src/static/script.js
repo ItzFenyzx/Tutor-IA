@@ -3,24 +3,7 @@
 // === PREVENÇÃO DE FLASH BRANCO === //
 document.documentElement.style.backgroundColor = localStorage.getItem('theme') === 'dark' ? '#1a1a1a' : '#ffffff';
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Aplicar tema imediatamente
-    applyTheme();
-    
-    // Verificar autenticação
-    const userData = getUserData();
-    if (!userData || !userData.isLoggedIn) {
-        window.location.href = 'login.html';
-        return;
-    }
-
-    // Mostrar body após carregar
-    setTimeout(() => {
-        document.body.classList.add('loaded');
-    }, 100);
-
-    // === ELEMENTOS DOM === //
-    const subjectsSection = document.getElementById('subjects-section');
+document.addEventListener("DOMContentLoaded", function() {
     const chatArea = document.getElementById('chat-area');
     const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
@@ -425,18 +408,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Popup de perfil
         userProfileTrigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            profilePopupOverlay.classList.add('active');
+            profilePopupOverlay.classList.remove("hidden-by-default");
         });
         
         profilePopupOverlay.addEventListener('click', (e) => {
             if (e.target === profilePopupOverlay) {
-                profilePopupOverlay.classList.remove('active');
+            profilePopupOverlay.classList.add("hidden-by-default");
             }
         });
         
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                profilePopupOverlay.classList.remove('active');
+                profilePopupOverlay.classList.add('hidden-by-default');
                 closeAllModals();
             }
         });
@@ -444,18 +427,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Links do popup de perfil
         document.getElementById('settings-link').addEventListener('click', (e) => {
             e.preventDefault();
-            profilePopupOverlay.classList.remove('active');
+            profilePopupOverlay.classList.add("hidden-by-default");
             showSettingsModal();
         });
         
         document.getElementById('help-link').addEventListener('click', (e) => {
             e.preventDefault();
-            profilePopupOverlay.classList.remove('active');
+            profilePopupOverlay.classList.add("hidden-by-default");
             showHelpModal();
         });
         
-        document.getElementById('logout-link').addEventListener('click', (e) => {
+        document.getElementById("logout-link").addEventListener("click", (e) => {
             e.preventDefault();
+            profilePopupOverlay.classList.add("hidden-by-default");
             logout();
         });
         
@@ -624,9 +608,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function closeAllModals() {
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
-            modal.classList.remove('active');
+        document.querySelectorAll(".modal-overlay").forEach(modal => {
+            modal.classList.remove("active");
         });
+        profilePopupOverlay.classList.add("hidden-by-default");
     }
 
     // === LOGOUT === //
@@ -654,4 +639,5 @@ function getUserData() {
     const data = localStorage.getItem('tutorIA_userData');
     return data ? JSON.parse(data) : null;
 }
+
 
