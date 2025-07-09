@@ -158,6 +158,10 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'index.html';
     });
 
-
+    // Verificar se já está logado
+    const isLoggedIn = localStorage.getItem('tutorIA_isLoggedIn');
+    if (isLoggedIn === 'true') {
+        window.location.href = 'index.html';
+    }
 });
 
