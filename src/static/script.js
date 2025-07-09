@@ -1,26 +1,60 @@
-// script.js - Tutor IA 3.0 - Versão Simplificada e Funcional
+// script.js - Tutor IA 3.0 - Sistema Completo
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Script carregado');
+// === PREVENÇÃO DE FLASH BRANCO === //
+document.documentElement.style.backgroundColor = localStorage.getItem('theme') === 'dark' ? '#1a1a1a' : '#ffffff';
 
-    // === VERIFICAÇÃO DE LOGIN === //
+document.addEventListener('DOMContentLoaded', function() {
+    // Aplicar tema imediatamente
+    applyTheme();
+    
+    // Verificar autenticação
+    const userData = getUserData();
+    if (!userData || !userData.isLoggedIn) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Mostrar body após carregar
+    setTimeout(() => {
+        document.body.classList.add('loaded');
+    }, 100);
 
     // === ELEMENTOS DOM === //
-    const welcomeScreen = document.getElementById('welcome-screen');
-    const chatContainer = document.getElementById('chat-container');
+    const subjectsSection = document.getElementById('subjects-section');
+    const chatArea = document.getElementById('chat-area');
     const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
     const sendButton = document.getElementById('send-button');
     const characterCount = document.getElementById('character-count');
     const userNameDisplay = document.getElementById('user-name');
     const profilePicture = document.getElementById('profile-picture');
+    const chatList = document.getElementById('chat-list');
     
-    // Popup de perfil
+    // Elementos do popup de perfil
+    const userProfileTrigger = document.getElementById('user-profile-trigger');
     const profilePopupOverlay = document.getElementById('profile-popup-overlay');
     const profilePopup = document.getElementById('profile-popup');
     const profilePopupPicture = document.getElementById('profile-popup-picture');
     const profilePopupName = document.getElementById('profile-popup-name');
     const profilePopupEmail = document.getElementById('profile-popup-email');
+    
+    // Elementos do chat header
+    const chatSubjectIcon = document.getElementById('chat-subject-icon');
+    const chatSubjectTitle = document.getElementById('chat-subject-title');
+    const chatSubjectDescription = document.getElementById('chat-subject-description');
+    
+    // Elementos de ações do chat
+    const newChatButton = document.getElementById('new-chat-button');
+    const newChatFromHeader = document.getElementById('new-chat-from-header');
+    const editChatName = document.getElementById('edit-chat-name');
+    const deleteChat = document.getElementById('delete-chat');
+    
+    // Modal de edição
+    const editChatModal = document.getElementById('edit-chat-modal');
+    const chatNameInput = document.getElementById('chat-name-input');
+    const saveChatName = document.getElementById('save-chat-name');
+    const cancelEditChat = document.getElementById('cancel-edit-chat');
+    const closeEditChatModal = document.getElementById('close-edit-chat-modal');
 
     // === DADOS DAS MATÉRIAS === //
     const subjects = {
@@ -28,616 +62,596 @@ document.addEventListener('DOMContentLoaded', () => {
         'portugues': { title: 'Português', description: 'Gramática, literatura e redação', icon: '📚', color: '#4ECDC4' },
         'historia': { title: 'História', description: 'História do Brasil e mundial', icon: '🏛️', color: '#45B7D1' },
         'geografia': { title: 'Geografia', description: 'Geografia física e humana', icon: '🌍', color: '#96CEB4' },
-        'ciencias': { title: 'Ciências', description: 'Ciências naturais e experimentos', icon: '🔬', color: '#FECA57' },
-        'ingles': { title: 'Inglês', description: 'Gramática, conversação e vocabulário', icon: '🇺🇸', color: '#FF9FF3' },
-        'fisica': { title: 'Física', description: 'Mecânica, eletricidade e óptica', icon: '⚡', color: '#54A0FF' },
-        'quimica': { title: 'Química', description: 'Química orgânica e inorgânica', icon: '🧪', color: '#5F27CD' },
-        'biologia': { title: 'Biologia', description: 'Genética, ecologia e anatomia', icon: '🌱', color: '#00D2D3' },
-        'filosofia': { title: 'Filosofia', description: 'Ética, lógica e história da filosofia', icon: '🤔', color: '#FF7675' },
-        'sociologia': { title: 'Sociologia', description: 'Sociedade, cultura e movimentos sociais', icon: '👥', color: '#A29BFE' },
-        'artes': { title: 'Artes', description: 'História da arte, técnicas e criatividade', icon: '🎨', color: '#FD79A8' },
-        'informatica': { title: 'Informática', description: 'Programação, algoritmos e tecnologia', icon: '💻', color: '#6C5CE7' },
-        'educacao_fisica': { title: 'Ed. Física', description: 'Esportes, saúde e bem-estar', icon: '🏃', color: '#00B894' }
+        'ciencias': { title: 'Ciências', description: 'Biologia, física e química básica', icon: '🔬', color: '#FFEAA7' },
+        'ingles': { title: 'Inglês', description: 'Gramática, vocabulário e conversação', icon: '🇺🇸', color: '#DDA0DD' },
+        'fisica': { title: 'Física', description: 'Mecânica, termodinâmica e eletromagnetismo', icon: '⚡', color: '#FFB347' },
+        'quimica': { title: 'Química', description: 'Química orgânica, inorgânica e físico-química', icon: '🧪', color: '#98FB98' },
+        'biologia': { title: 'Biologia', description: 'Genética, ecologia e anatomia', icon: '🧬', color: '#87CEEB' },
+        'filosofia': { title: 'Filosofia', description: 'Ética, lógica e história da filosofia', icon: '🤔', color: '#F0E68C' },
+        'sociologia': { title: 'Sociologia', description: 'Sociedade, cultura e relações sociais', icon: '👥', color: '#DEB887' },
+        'artes': { title: 'Artes', description: 'História da arte, técnicas e expressão artística', icon: '🎨', color: '#FFB6C1' },
+        'informatica': { title: 'Informática', description: 'Programação, algoritmos e tecnologia', icon: '💻', color: '#B0C4DE' },
+        'educacao-fisica': { title: 'Educação Física', description: 'Esportes, saúde e atividade física', icon: '⚽', color: '#90EE90' }
     };
 
-    // === ESTADO GLOBAL === //
-    let currentChat = null;
+    // === VARIÁVEIS GLOBAIS === //
+    let currentSubject = null;
+    let currentChatId = null;
     let isTyping = false;
 
-    // === FUNÇÕES DE PERSISTÊNCIA === //
-    const getUserData = () => {
+    // === INICIALIZAÇÃO === //
+    init();
+
+    function init() {
+        loadUserData();
+        loadSubjects();
+        loadChats();
+        setupEventListeners();
+        checkDailyLimit();
+    }
+
+    // === DADOS DO USUÁRIO === //
+    function getUserData() {
         const data = localStorage.getItem('tutorIA_userData');
-        return data ? JSON.parse(data) : { name: 'Usuário', email: 'usuario@exemplo.com' };
-    };
+        return data ? JSON.parse(data) : null;
+    }
 
-    const getChats = () => {
-        const chats = localStorage.getItem('tutorIA_chats');
-        return chats ? JSON.parse(chats) : [];
-    };
+    function saveUserData(data) {
+        localStorage.setItem('tutorIA_userData', JSON.stringify(data));
+    }
 
-    const saveChats = (chats) => {
-        localStorage.setItem('tutorIA_chats', JSON.stringify(chats));
-        renderChatList();
-    };
-
-    // === APLICAÇÃO GLOBAL === //
-    const applyUserData = () => {
+    function loadUserData() {
         const userData = getUserData();
-        if (userNameDisplay) {
+        if (userData) {
             userNameDisplay.textContent = userData.name || 'Usuário';
-        }
-        if (profilePicture) {
             profilePicture.src = userData.profilePicture || 'https://via.placeholder.com/40';
-        }
-        
-        // Atualizar popup de perfil
-        if (profilePopupPicture) {
-            profilePopupPicture.src = userData.profilePicture || 'https://via.placeholder.com/50';
-        }
-        if (profilePopupName) {
-            profilePopupName.textContent = userData.name || 'Usuário';
-        }
-        if (profilePopupEmail) {
-            profilePopupEmail.textContent = userData.email || 'usuario@exemplo.com';
-        }
-    };
-
-    // === POPUP DE PERFIL === //
-    const showProfilePopup = () => {
-        if (profilePopupOverlay) {
-            profilePopupOverlay.style.display = 'block';
-        }
-    };
-
-    const hideProfilePopup = () => {
-        if (profilePopupOverlay) {
-            profilePopupOverlay.style.display = 'none';
-        }
-    };
-
-    // === GERENCIAMENTO DE CHATS === //
-    const createNewChat = (subject) => {
-        const chatId = 'chat_' + Date.now();
-        const newChat = {
-            id: chatId,
-            subject: subject,
-            messages: [],
-            createdAt: new Date().toISOString(),
-            lastActivity: new Date().toISOString()
-        };
-
-        const allChats = getChats();
-        allChats.push(newChat);
-        saveChats(allChats);
-
-        return newChat;
-    };
-
-    const updateChat = (chatId, updates) => {
-        const allChats = getChats();
-        const chatIndex = allChats.findIndex(c => c.id === chatId);
-        
-        if (chatIndex !== -1) {
-            allChats[chatIndex] = { ...allChats[chatIndex], ...updates };
-            allChats[chatIndex].lastActivity = new Date().toISOString();
-            saveChats(allChats);
             
-            if (currentChat && currentChat.id === chatId) {
-                currentChat = allChats[chatIndex];
-            }
+            // Popup de perfil
+            profilePopupName.textContent = userData.name || 'Usuário';
+            profilePopupEmail.textContent = userData.email || 'usuario@email.com';
+            profilePopupPicture.src = userData.profilePicture || 'https://via.placeholder.com/48';
         }
-    };
+    }
 
-    // === INTERFACE === //
-    const showWelcomeScreen = () => {
-        if (welcomeScreen) welcomeScreen.style.display = 'block';
-        if (chatContainer) chatContainer.style.display = 'none';
-    };
+    // === TEMA === //
+    function applyTheme() {
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.style.backgroundColor = theme === 'dark' ? '#1a1a1a' : '#ffffff';
+    }
 
-    const showChatInterface = (chat) => {
-        if (welcomeScreen) welcomeScreen.style.display = 'none';
-        if (chatContainer) chatContainer.style.display = 'flex';
+    // === MATÉRIAS === //
+    function loadSubjects() {
+        const subjectsGrid = document.getElementById('subjects-grid');
+        subjectsGrid.innerHTML = '';
+
+        Object.entries(subjects).forEach(([key, subject]) => {
+            const subjectCard = document.createElement('div');
+            subjectCard.className = 'subject-card';
+            subjectCard.dataset.subject = key;
+            
+            subjectCard.innerHTML = `
+                <span class="subject-icon" style="color: ${subject.color}">${subject.icon}</span>
+                <h3>${subject.title}</h3>
+                <p>${subject.description}</p>
+            `;
+            
+            subjectCard.addEventListener('click', () => selectSubject(key));
+            subjectsGrid.appendChild(subjectCard);
+        });
+    }
+
+    function selectSubject(subjectKey) {
+        currentSubject = subjectKey;
+        const subject = subjects[subjectKey];
         
         // Atualizar header do chat
-        const chatSubjectIcon = document.getElementById('chat-subject-icon');
-        const chatSubjectTitle = document.getElementById('chat-subject-title');
-        const chatSubjectDescription = document.getElementById('chat-subject-description');
+        chatSubjectIcon.textContent = subject.icon;
+        chatSubjectIcon.style.color = subject.color;
+        chatSubjectTitle.textContent = subject.title;
+        chatSubjectDescription.textContent = subject.description;
         
-        if (chatSubjectIcon) {
-            chatSubjectIcon.textContent = chat.subject.icon;
-            chatSubjectIcon.style.color = chat.subject.color;
-        }
-        if (chatSubjectTitle) {
-            chatSubjectTitle.textContent = chat.subject.title;
-        }
-        if (chatSubjectDescription) {
-            chatSubjectDescription.textContent = chat.subject.description;
-        }
-    };
+        // Mostrar área do chat e esconder matérias
+        subjectsSection.classList.add('hidden');
+        chatArea.classList.remove('hidden');
+        
+        // Criar novo chat automaticamente
+        createNewChat(subject.title);
+    }
 
-    const renderMessages = (messages) => {
-        if (!chatMessages) return;
+    // === CHATS === //
+    function getChats() {
+        const chats = localStorage.getItem('tutorIA_chats');
+        return chats ? JSON.parse(chats) : [];
+    }
+
+    function saveChats(chats) {
+        localStorage.setItem('tutorIA_chats', JSON.stringify(chats));
+    }
+
+    function loadChats() {
+        const chats = getChats();
+        chatList.innerHTML = '';
         
+        if (chats.length === 0) {
+            chatList.innerHTML = '<div class="text-muted text-center" style="padding: 20px; font-size: 0.9rem;">Nenhum chat ainda.<br>Selecione uma matéria para começar!</div>';
+            return;
+        }
+        
+        chats.forEach(chat => {
+            const chatItem = document.createElement('div');
+            chatItem.className = 'chat-item';
+            chatItem.dataset.chatId = chat.id;
+            
+            chatItem.innerHTML = `
+                <span class="chat-icon">${subjects[chat.subject]?.icon || '💬'}</span>
+                <span class="chat-name">${chat.name}</span>
+            `;
+            
+            chatItem.addEventListener('click', () => openChat(chat.id));
+            chatList.appendChild(chatItem);
+        });
+    }
+
+    function createNewChat(subjectTitle) {
+        const chats = getChats();
+        const chatId = 'chat_' + Date.now();
+        const chatName = `${subjectTitle} - ${new Date().toLocaleDateString()}`;
+        
+        const newChat = {
+            id: chatId,
+            name: chatName,
+            subject: currentSubject,
+            messages: [],
+            createdAt: new Date().toISOString()
+        };
+        
+        chats.unshift(newChat);
+        saveChats(chats);
+        loadChats();
+        openChat(chatId);
+    }
+
+    function openChat(chatId) {
+        const chats = getChats();
+        const chat = chats.find(c => c.id === chatId);
+        
+        if (!chat) return;
+        
+        currentChatId = chatId;
+        currentSubject = chat.subject;
+        
+        // Atualizar UI
+        const subject = subjects[chat.subject];
+        if (subject) {
+            chatSubjectIcon.textContent = subject.icon;
+            chatSubjectIcon.style.color = subject.color;
+            chatSubjectTitle.textContent = subject.title;
+            chatSubjectDescription.textContent = subject.description;
+        }
+        
+        // Mostrar área do chat
+        subjectsSection.classList.add('hidden');
+        chatArea.classList.remove('hidden');
+        
+        // Carregar mensagens
+        loadMessages(chat.messages);
+        
+        // Atualizar lista de chats
+        document.querySelectorAll('.chat-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.chatId === chatId);
+        });
+    }
+
+    function loadMessages(messages) {
         chatMessages.innerHTML = '';
         
         if (messages.length === 0) {
             const welcomeMessage = document.createElement('div');
-            welcomeMessage.classList.add('message', 'ai-message');
+            welcomeMessage.className = 'message';
             welcomeMessage.innerHTML = `
+                <div class="message-avatar">IA</div>
                 <div class="message-content">
-                    <p>Olá! Sou seu tutor de ${currentChat.subject.title}. Como posso ajudá-lo hoje?</p>
-                    <p>Você pode me fazer perguntas sobre qualquer tópico da matéria!</p>
+                    <div class="message-text">Olá! Sou seu tutor de ${subjects[currentSubject]?.title}. Como posso ajudá-lo hoje?</div>
+                    <div class="message-time">${new Date().toLocaleTimeString()}</div>
                 </div>
-                <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
             `;
             chatMessages.appendChild(welcomeMessage);
-        } else {
-            messages.forEach(message => {
-                const messageElement = createMessageElement(message);
-                chatMessages.appendChild(messageElement);
-            });
+            return;
         }
         
-        scrollToBottom();
-    };
-
-    const createMessageElement = (message) => {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', message.sender === 'user' ? 'user-message' : 'ai-message');
+        messages.forEach(message => {
+            addMessageToChat(message.text, message.sender, message.timestamp, false);
+        });
         
-        messageDiv.innerHTML = `
+        scrollToBottom();
+    }
+
+    function addMessageToChat(text, sender, timestamp, save = true) {
+        const message = document.createElement('div');
+        message.className = `message ${sender}`;
+        
+        const avatar = sender === 'user' ? 'EU' : 'IA';
+        const time = timestamp ? new Date(timestamp).toLocaleTimeString() : new Date().toLocaleTimeString();
+        
+        message.innerHTML = `
+            <div class="message-avatar">${avatar}</div>
             <div class="message-content">
-                <p>${message.text}</p>
+                <div class="message-text">${text}</div>
+                <div class="message-time">${time}</div>
             </div>
-            <div class="message-time">${new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
         `;
         
-        return messageDiv;
-    };
-
-    const addMessage = (text, sender = 'user') => {
-        if (!currentChat) return;
-        
-        const message = {
-            id: 'msg_' + Date.now(),
-            text: text,
-            sender: sender,
-            timestamp: new Date().toISOString()
-        };
-        
-        currentChat.messages.push(message);
-        updateChat(currentChat.id, { messages: currentChat.messages });
-        
-        const messageElement = createMessageElement(message);
-        chatMessages.appendChild(messageElement);
+        chatMessages.appendChild(message);
         scrollToBottom();
         
-        return message;
-    };
-
-    const scrollToBottom = () => {
-        if (chatMessages) {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (save && currentChatId) {
+            saveMessage(text, sender, timestamp || new Date().toISOString());
         }
-    };
+    }
 
-    // === SIMULAÇÃO DE IA === //
-    const simulateAIResponse = (userMessage) => {
-        if (isTyping) return;
+    function saveMessage(text, sender, timestamp) {
+        const chats = getChats();
+        const chatIndex = chats.findIndex(c => c.id === currentChatId);
         
+        if (chatIndex !== -1) {
+            chats[chatIndex].messages.push({
+                text,
+                sender,
+                timestamp
+            });
+            saveChats(chats);
+        }
+    }
+
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // === ENVIO DE MENSAGENS === //
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text || isTyping) return;
+        
+        // Verificar limite diário
+        if (!checkDailyLimit()) {
+            showUpgradeModal();
+            return;
+        }
+        
+        // Adicionar mensagem do usuário
+        addMessageToChat(text, 'user');
+        chatInput.value = '';
+        updateCharacterCount();
+        
+        // Simular resposta da IA
+        simulateAIResponse(text);
+        
+        // Incrementar contador diário
+        incrementDailyUsage();
+    }
+
+    function simulateAIResponse(userMessage) {
         isTyping = true;
+        sendButton.disabled = true;
         
         // Mostrar indicador de digitação
         const typingIndicator = document.createElement('div');
-        typingIndicator.classList.add('message', 'ai-message', 'typing-indicator');
+        typingIndicator.className = 'message typing-indicator';
         typingIndicator.innerHTML = `
+            <div class="message-avatar">IA</div>
             <div class="message-content">
                 <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
                 </div>
             </div>
         `;
         chatMessages.appendChild(typingIndicator);
         scrollToBottom();
         
-        // Simular tempo de resposta
+        // Simular delay de resposta
         setTimeout(() => {
             chatMessages.removeChild(typingIndicator);
             
-            // Gerar resposta simulada
-            const responses = [
-                `Excelente pergunta sobre ${currentChat.subject.title}! Vou explicar isso de forma clara e didática.`,
-                `Entendo sua dúvida. Vamos resolver isso passo a passo.`,
-                `Ótimo tópico para estudarmos! Deixe-me te ajudar com isso.`,
-                `Essa é uma questão importante em ${currentChat.subject.title}. Vou te dar uma explicação completa.`,
-                `Perfeito! Vamos explorar esse conceito juntos.`
-            ];
-            
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            addMessage(randomResponse, 'ai');
+            // Gerar resposta baseada na matéria
+            const response = generateAIResponse(userMessage, currentSubject);
+            addMessageToChat(response, 'ai');
             
             isTyping = false;
-        }, 1500 + Math.random() * 2000);
-    };
+            sendButton.disabled = false;
+            chatInput.focus();
+        }, 1500 + Math.random() * 1000);
+    }
 
-    // === RENDERIZAÇÃO DE CHATS === //
-    const renderChatList = () => {
-        const chatList = document.getElementById('chat-list');
-        if (!chatList) return;
+    function generateAIResponse(message, subject) {
+        const subjectName = subjects[subject]?.title || 'esta matéria';
         
-        const allChats = getChats();
-        chatList.innerHTML = '';
+        const responses = [
+            `Excelente pergunta sobre ${subjectName}! Vou explicar de forma clara e didática.`,
+            `Ótimo! Essa é uma questão importante em ${subjectName}. Deixe-me ajudá-lo a entender.`,
+            `Perfeito! Vamos explorar esse conceito de ${subjectName} juntos.`,
+            `Muito bem! Essa é uma dúvida comum em ${subjectName}. Vou esclarecer para você.`,
+            `Interessante! Esse tópico de ${subjectName} é fundamental. Vou explicar passo a passo.`
+        ];
         
-        if (allChats.length === 0) {
-            chatList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px; font-size: 0.9em;">Nenhum chat ainda.<br>Clique em + para começar!</p>';
-            return;
-        }
-        
-        // Ordenar chats por atividade mais recente
-        const sortedChats = [...allChats].sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity));
+        return responses[Math.floor(Math.random() * responses.length)];
+    }
 
-        sortedChats.slice(0, 5).forEach(chat => {
-            const chatItem = document.createElement('div');
-            chatItem.classList.add('chat-item');
-            chatItem.dataset.chatId = chat.id;
-            
-            const lastMessage = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
-            const preview = lastMessage ? lastMessage.text.substring(0, 25) + '...' : 'Novo Chat';
-            
-            chatItem.innerHTML = `
-                <span class="chat-icon" style="background-color: ${chat.subject.color};">${chat.subject.icon}</span>
-                <div class="chat-info">
-                    <div class="chat-subject">${chat.subject.title}</div>
-                    <div class="chat-name">${preview}</div>
-                </div>
-                <div class="chat-time">${new Date(chat.lastActivity).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-            `;
-            chatList.appendChild(chatItem);
+    // === LIMITE DIÁRIO === //
+    function checkDailyLimit() {
+        const userData = getUserData();
+        if (userData?.isPro) return true;
+        
+        const today = new Date().toDateString();
+        const usage = JSON.parse(localStorage.getItem('tutorIA_dailyUsage') || '{}');
+        
+        return (usage[today] || 0) < 5;
+    }
 
-            chatItem.addEventListener('click', () => {
-                loadChat(chat.id);
-            });
-        });
-    };
+    function incrementDailyUsage() {
+        const today = new Date().toDateString();
+        const usage = JSON.parse(localStorage.getItem('tutorIA_dailyUsage') || '{}');
+        
+        usage[today] = (usage[today] || 0) + 1;
+        localStorage.setItem('tutorIA_dailyUsage', JSON.stringify(usage));
+    }
 
-    const loadChat = (chatId) => {
-        const allChats = getChats();
-        const chat = allChats.find(c => c.id === chatId);
+    function getRemainingChats() {
+        const userData = getUserData();
+        if (userData?.isPro) return 'Ilimitado';
         
-        if (!chat) {
-            showWelcomeScreen();
-            return null;
-        }
-
-        currentChat = chat;
-        showChatInterface(chat);
-        renderMessages(chat.messages);
+        const today = new Date().toDateString();
+        const usage = JSON.parse(localStorage.getItem('tutorIA_dailyUsage') || '{}');
         
-        return chat;
-    };
-
-    // === ENVIO DE MENSAGENS === //
-    const sendMessage = () => {
-        if (!chatInput || !currentChat || isTyping) return;
-        
-        const message = chatInput.value.trim();
-        if (!message) return;
-        
-        addMessage(message, 'user');
-        chatInput.value = '';
-        
-        if (characterCount) {
-            characterCount.textContent = '0/2000';
-        }
-        if (sendButton) {
-            sendButton.disabled = true;
-        }
-        
-        // Simular resposta da IA
-        simulateAIResponse(message);
-    };
-
-    // === INICIALIZAÇÃO === //
-    const initializeApp = () => {
-        console.log('Inicializando app');
-        
-        // Aplicar dados do usuário
-        applyUserData();
-        
-        // Carregar chats
-        renderChatList();
-        
-        // Mostrar tela de boas-vindas
-        showWelcomeScreen();
-    };
+        return Math.max(0, 5 - (usage[today] || 0));
+    }
 
     // === EVENT LISTENERS === //
-
-    // Seleção de matérias
-    document.querySelectorAll('.subject-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const subjectId = card.dataset.subject;
-            const subject = subjects[subjectId];
-            if (subject) {
-                const newChat = createNewChat(subject);
-                currentChat = newChat;
-                showChatInterface(newChat);
-                renderMessages(newChat.messages);
-            }
-        });
-    });
-
-    // Input de chat
-    if (chatInput) {
-        chatInput.addEventListener('input', () => {
-            const length = chatInput.value.length;
-            if (characterCount) {
-                characterCount.textContent = `${length}/2000`;
-            }
-            
-            if (sendButton) {
-                sendButton.disabled = length === 0 || isTyping;
-            }
-        });
-
-        chatInput.addEventListener('keydown', (e) => {
+    function setupEventListeners() {
+        // Envio de mensagem
+        sendButton.addEventListener('click', sendMessage);
+        
+        chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
         });
-    }
-
-    // Botão de enviar
-    if (sendButton) {
-        sendButton.addEventListener('click', sendMessage);
-    }
-
-    // Botão de novo chat
-    const newChatButton = document.getElementById('new-chat-button');
-    if (newChatButton) {
-        newChatButton.addEventListener('click', () => {
-            currentChat = null;
-            showWelcomeScreen();
-        });
-    }
-
-    // Navegação
-    const dashboardLink = document.getElementById('dashboard-link');
-    if (dashboardLink) {
-        dashboardLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = 'dashboard.html';
-        });
-    }
-
-    const challengesLink = document.getElementById('challenges-link');
-    if (challengesLink) {
-        challengesLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = 'challenges.html';
-        });
-    }
-
-    const profileLink = document.getElementById('profile-link');
-    if (profileLink) {
-        profileLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = 'profile.html';
-        });
-    }
-
-    // Logout
-    const logoutButton = document.getElementById('logout-button');
-    if (logoutButton) {
-        logoutButton.addEventListener('click', () => {
-            if (confirm('Tem certeza que deseja sair?')) {
-                localStorage.clear();
-                window.location.href = 'login.html';
-            }
-        });
-    }
-
-    // === POPUP DE PERFIL === //
-    // Abrir popup ao clicar na foto de perfil
-    if (profilePicture) {
-        profilePicture.addEventListener('click', (e) => {
+        
+        chatInput.addEventListener('input', updateCharacterCount);
+        
+        // Popup de perfil
+        userProfileTrigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            showProfilePopup();
+            profilePopupOverlay.classList.add('active');
         });
-    }
-
-    // Fechar popup ao clicar no overlay
-    if (profilePopupOverlay) {
+        
         profilePopupOverlay.addEventListener('click', (e) => {
-            hideProfilePopup();
-        });
-    }
-
-    // Não fechar popup ao clicar dentro dele
-    if (profilePopup) {
-        profilePopup.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-    }
-
-    // Fechar popup com tecla Escape
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && profilePopupOverlay && profilePopupOverlay.style.display === 'block') {
-            hideProfilePopup();
-        }
-    });
-
-    // Event listeners dos itens do popup
-    const logoutPopupItem = document.getElementById('logout-popup-item');
-    if (logoutPopupItem) {
-        logoutPopupItem.addEventListener('click', () => {
-            hideProfilePopup();
-            if (confirm('Tem certeza que deseja sair?')) {
-                localStorage.clear();
-                window.location.href = 'login.html';
+            if (e.target === profilePopupOverlay) {
+                profilePopupOverlay.classList.remove('active');
             }
         });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                profilePopupOverlay.classList.remove('active');
+                closeAllModals();
+            }
+        });
+        
+        // Links do popup de perfil
+        document.getElementById('settings-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            profilePopupOverlay.classList.remove('active');
+            showSettingsModal();
+        });
+        
+        document.getElementById('help-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            profilePopupOverlay.classList.remove('active');
+            showHelpModal();
+        });
+        
+        document.getElementById('logout-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+        
+        // Botões de chat
+        newChatButton.addEventListener('click', () => {
+            if (currentSubject) {
+                createNewChat(subjects[currentSubject].title);
+            } else {
+                // Voltar para seleção de matérias
+                chatArea.classList.add('hidden');
+                subjectsSection.classList.remove('hidden');
+            }
+        });
+        
+        newChatFromHeader.addEventListener('click', () => {
+            if (currentSubject) {
+                createNewChat(subjects[currentSubject].title);
+            }
+        });
+        
+        editChatName.addEventListener('click', showEditChatModal);
+        deleteChat.addEventListener('click', deleteChatConfirm);
+        
+        // Modal de edição
+        saveChatName.addEventListener('click', saveNewChatName);
+        cancelEditChat.addEventListener('click', closeEditChatModal);
+        closeEditChatModal.addEventListener('click', closeEditChatModal);
+        
+        // Upgrade
+        document.getElementById('upgrade-button').addEventListener('click', showUpgradeModal);
+        
+        // Ajuda
+        document.getElementById('help-button').addEventListener('click', showHelpModal);
+        
+        // Modais
+        setupModalListeners();
     }
 
-    const settingsPopupItem = document.getElementById('settings-popup-item');
-    if (settingsPopupItem) {
-        settingsPopupItem.addEventListener('click', () => {
-            hideProfilePopup();
-            // Aqui você pode adicionar a funcionalidade de configurações
-            alert('Configurações em desenvolvimento!');
+    function updateCharacterCount() {
+        const count = chatInput.value.length;
+        characterCount.textContent = `${count}/2000`;
+        
+        if (count > 1800) {
+            characterCount.style.color = 'var(--error-color)';
+        } else if (count > 1500) {
+            characterCount.style.color = 'var(--warning-color)';
+        } else {
+            characterCount.style.color = 'var(--text-muted)';
+        }
+    }
+
+    // === EDIÇÃO DE CHAT === //
+    function showEditChatModal() {
+        if (!currentChatId) return;
+        
+        const chats = getChats();
+        const chat = chats.find(c => c.id === currentChatId);
+        
+        if (chat) {
+            chatNameInput.value = chat.name;
+            document.getElementById('edit-chat-modal').classList.add('active');
+        }
+    }
+
+    function closeEditChatModal() {
+        document.getElementById('edit-chat-modal').classList.remove('active');
+    }
+
+    function saveNewChatName() {
+        const newName = chatNameInput.value.trim();
+        if (!newName || !currentChatId) return;
+        
+        const chats = getChats();
+        const chatIndex = chats.findIndex(c => c.id === currentChatId);
+        
+        if (chatIndex !== -1) {
+            chats[chatIndex].name = newName;
+            saveChats(chats);
+            loadChats();
+            closeEditChatModal();
+        }
+    }
+
+    function deleteChatConfirm() {
+        if (!currentChatId) return;
+        
+        if (confirm('Tem certeza que deseja excluir este chat? Esta ação não pode ser desfeita.')) {
+            const chats = getChats();
+            const filteredChats = chats.filter(c => c.id !== currentChatId);
+            
+            saveChats(filteredChats);
+            loadChats();
+            
+            // Voltar para seleção de matérias
+            currentChatId = null;
+            currentSubject = null;
+            chatArea.classList.add('hidden');
+            subjectsSection.classList.remove('hidden');
+        }
+    }
+
+    // === MODAIS === //
+    function setupModalListeners() {
+        // Upgrade Modal
+        const upgradeModal = document.getElementById('upgrade-modal');
+        const closeUpgradeModal = document.getElementById('close-upgrade-modal');
+        const maybeLater = document.getElementById('maybe-later');
+        const upgradeNow = document.getElementById('upgrade-now');
+        
+        closeUpgradeModal.addEventListener('click', () => upgradeModal.classList.remove('active'));
+        maybeLater.addEventListener('click', () => upgradeModal.classList.remove('active'));
+        upgradeNow.addEventListener('click', () => {
+            alert('Redirecionando para o pagamento...');
+            upgradeModal.classList.remove('active');
+        });
+        
+        // Settings Modal
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettingsModal = document.getElementById('close-settings-modal');
+        const saveSettings = document.getElementById('save-settings');
+        const lightTheme = document.getElementById('light-theme');
+        const darkTheme = document.getElementById('dark-theme');
+        const ageInput = document.getElementById('age-input');
+        const difficultySelect = document.getElementById('difficulty-select');
+        
+        closeSettingsModal.addEventListener('click', () => settingsModal.classList.remove('active'));
+        
+        lightTheme.addEventListener('click', () => {
+            localStorage.setItem('theme', 'light');
+            applyTheme();
+        });
+        
+        darkTheme.addEventListener('click', () => {
+            localStorage.setItem('theme', 'dark');
+            applyTheme();
+        });
+        
+        saveSettings.addEventListener('click', () => {
+            const userData = getUserData();
+            if (userData) {
+                userData.age = parseInt(ageInput.value) || userData.age;
+                userData.difficulty = difficultySelect.value || userData.difficulty;
+                saveUserData(userData);
+            }
+            settingsModal.classList.remove('active');
+        });
+        
+        // Carregar configurações atuais
+        const userData = getUserData();
+        if (userData) {
+            ageInput.value = userData.age || '';
+            difficultySelect.value = userData.difficulty || 'auto';
+        }
+    }
+
+    function showUpgradeModal() {
+        document.getElementById('upgrade-modal').classList.add('active');
+    }
+
+    function showSettingsModal() {
+        document.getElementById('settings-modal').classList.add('active');
+    }
+
+    function showHelpModal() {
+        alert('Central de Ajuda\n\n• Use o chat para fazer perguntas sobre qualquer matéria\n• Você tem 5 chats gratuitos por dia\n• Faça upgrade para chats ilimitados\n• Clique na sua foto de perfil para acessar configurações');
+    }
+
+    function closeAllModals() {
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.classList.remove('active');
         });
     }
 
-    const helpPopupItem = document.getElementById('help-popup-item');
-    if (helpPopupItem) {
-        helpPopupItem.addEventListener('click', () => {
-            hideProfilePopup();
-            // Aqui você pode adicionar a funcionalidade de ajuda
-            alert('Ajuda em desenvolvimento!');
-        });
+    // === LOGOUT === //
+    function logout() {
+        if (confirm('Tem certeza que deseja sair?')) {
+            localStorage.removeItem('tutorIA_userData');
+            window.location.href = 'login.html';
+        }
     }
 
-    // === INICIALIZAÇÃO FINAL === //
-    initializeApp();
-    console.log('App inicializado com sucesso');
+    // === NAVEGAÇÃO === //
+    document.getElementById('dashboard-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = 'dashboard.html';
+    });
+    
+    document.getElementById('challenges-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = 'challenges.html';
+    });
 });
 
-
-
-
-    // === MODAL DE LOGIN (ADAPTADO DO POPUP DE PERFIL) === //
-    const loginModalOverlay = document.getElementById("profile-popup-overlay"); // Reutilizando o overlay do popup de perfil
-    const loginModal = document.getElementById("profile-popup"); // Reutilizando o popup de perfil como modal de login
-
-    const showLoginModal = () => {
-        if (loginModalOverlay) {
-            loginModalOverlay.style.display = 'flex'; // Usar flex para centralizar
-            loginModal.innerHTML = `
-                <div class="modal-content upgrade-modal-content" style="max-width: 400px;">
-                    <span class="close-button" id="close-login-modal">&times;</span>
-                    <h2>Faça Login ou Cadastre-se</h2>
-                    <p>Para continuar, por favor, faça login ou crie uma conta.</p>
-                    <button class="button-primary" id="go-to-login-page" style="width: 100%; margin-top: 20px;">Ir para a página de Login</button>
-                </div>
-            `;
-            document.getElementById("close-login-modal").addEventListener("click", hideLoginModal);
-            document.getElementById("go-to-login-page").addEventListener("click", () => {
-                window.location.href = 'login.html';
-            });
-        }
-    };
-
-    const hideLoginModal = () => {
-        if (loginModalOverlay) {
-            loginModalOverlay.style.display = 'none';
-        }
-    };
-
-    // Modificar o evento de clique do botão de novo chat
-    if (newChatButton) {
-        newChatButton.removeEventListener("click", () => {
-            currentChat = null;
-            showWelcomeScreen();
-        }); // Remover o listener antigo
-        newChatButton.addEventListener("click", () => {
-            const isLoggedIn = localStorage.getItem("tutorIA_isLoggedIn");
-            if (isLoggedIn === "true") {
-                currentChat = null;
-                showWelcomeScreen();
-            } else {
-                showLoginModal();
-            }
-        });
-    }
-
-    // Modificar o evento de clique dos cards de matéria
-    document.querySelectorAll(".subject-card").forEach(card => {
-        const oldClickListener = card._currentClickListener; // Salvar o listener antigo se existir
-        if (oldClickListener) {
-            card.removeEventListener("click", oldClickListener);
-        }
-
-        const newClickListener = () => {
-            const isLoggedIn = localStorage.getItem("tutorIA_isLoggedIn");
-            if (isLoggedIn === "true") {
-                const subjectId = card.dataset.subject;
-                const subject = subjects[subjectId];
-                if (subject) {
-                    const newChat = createNewChat(subject);
-                    currentChat = newChat;
-                    showChatInterface(newChat);
-                    renderMessages(newChat.messages);
-                }
-            } else {
-                showLoginModal();
-            }
-        };
-        card.addEventListener("click", newClickListener);
-        card._currentClickListener = newClickListener; // Salvar o novo listener
-    });
-
-    // Remover o listener de clique do overlay do profile-popup para evitar conflito
-    if (profilePopupOverlay) {
-        profilePopupOverlay.removeEventListener("click", (e) => {
-            hideProfilePopup();
-        });
-    }
-
-    // Adicionar um listener para fechar o modal de login se o usuário clicar fora dele
-    if (loginModalOverlay) {
-        loginModalOverlay.addEventListener("click", (e) => {
-            if (e.target === loginModalOverlay) { // Verifica se o clique foi no overlay e não no conteúdo do modal
-                hideLoginModal();
-            }
-        });
-    }
-
-    // Não fechar modal ao clicar dentro dele
-    if (loginModal) {
-        loginModal.addEventListener("click", (e) => {
-            e.stopPropagation();
-        });
-    }
-
-    // Fechar modal com tecla Escape
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && loginModalOverlay && loginModalOverlay.style.display === "flex") {
-            hideLoginModal();
-        }
-    });
-
-    // Ajustar o CSS do profile-popup-overlay para ser um modal centralizado
-    const styleElement = document.createElement('style');
-    styleElement.textContent = `
-        .profile-popup-overlay {
-            display: none; /* Esconder por padrão */
-            align-items: center; /* Centralizar verticalmente */
-            justify-content: center; /* Centralizar horizontalmente */
-            background-color: rgba(0, 0, 0, 0.6); /* Fundo mais escuro */
-            backdrop-filter: blur(4px); /* Blur mais forte */
-        }
-        .profile-popup {
-            position: relative; /* Remover posicionamento absoluto */
-            top: auto; /* Remover top */
-            right: auto; /* Remover right */
-            transform: none; /* Remover transform */
-            animation: none; /* Remover animação */
-            min-width: auto; /* Ajustar largura mínima */
-            max-width: 500px; /* Ajustar largura máxima */
-            width: 90%; /* Largura responsiva */
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); /* Sombra mais pronunciada */
-        }
-        .profile-popup-content {
-            border-radius: 16px; /* Bordas mais arredondadas */
-            padding: 30px; /* Mais padding */
-        }
-        .profile-popup-header, .profile-popup-options {
-            display: none; /* Esconder conteúdo original do popup de perfil */
-        }
-    `;
-    document.head.appendChild(styleElement);
-
+// === FUNÇÕES GLOBAIS === //
+function getUserData() {
+    const data = localStorage.getItem('tutorIA_userData');
+    return data ? JSON.parse(data) : null;
+}
 
